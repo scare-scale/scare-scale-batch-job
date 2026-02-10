@@ -27,8 +27,8 @@ public record BatchDispatcher(
                 .filter(p -> p.getClass().getSimpleName().equals(jobName))
                 .findFirst();
 
-        job.orElseThrow(() -> new IllegalArgumentException("Unknown job: " + jobName))
-                .run();
+        // Run Job
+        job.orElseThrow(() -> new IllegalArgumentException("Unknown job: " + jobName)).run();
 
         return "Job " + jobName + " completed";
     }
