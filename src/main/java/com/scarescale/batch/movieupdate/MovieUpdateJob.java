@@ -11,26 +11,34 @@ import info.movito.themoviedbapi.tools.TmdbException;
 @AutoService(BatchJob.class)
 public class MovieUpdateJob implements BatchJob {
 
-    public void run() {
+    private final TmdbApi api;
+    private final PostgresController controller;
+    private final MovieIterator iterator;
+
+    public MovieUpdateJob() throws TmdbException {
         final String tmdbApiKey = System.getenv("TMDB_API_KEY");
         final String supabaseSecret = System.getenv("SUPABASE_SECRET_KEY");
         final String supabaseProjectId = System.getenv("SUPABASE_PROJECT_ID");
 
-        try {
-            final TmdbApi api = new TmdbApi(tmdbApiKey);
-            final PostgresController controller = new PostgresController(supabaseProjectId, supabaseSecret);
-
-            final MovieIterator movieIterator = new MovieIterator(api);
-
-            long insertedCount = movieIterator.stream()
-                    .filter(Objects::nonNull)
-                    .peek(controller::insertMovie)
-                    .count();
-
-            System.out.println("Found " + insertedCount + " horror movies.");
-        } catch (TmdbException e) {
-            throw new RuntimeException(e);
-        }
+        this.api = new TmdbApi(tmdbApiKey);
+        this.controller = new PostgresController(supabaseProjectId, supabaseSecret);
+        this.iterator = new MovieIterator(api);
     }
 
+    // Test constructor
+    MovieUpdateJob(TmdbApi api, PostgresController controller, MovieIterator iterator) {
+        this.api = api;
+        this.controller = controller;
+        this.iterator = iterator;
+    }
+
+    @Override
+    public void run() {
+        long insertedCount = iterator.stream()
+                .filter(Objects::nonNull)
+                .peek(controller::insertMovie)
+                .count();
+
+        System.out.println("Found " + insertedCount + " horror movies.");
+    }
 }
