@@ -1,0 +1,20 @@
+# Java
+*.class
+*.log
+
+# Gradle
+.gradle/
+build/
+local.properties
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
