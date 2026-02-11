@@ -1,0 +1,20 @@
+# AWS Configuration
+aws_region = "eu-west-1"
+environment = "production"
+
+# Lambda Configuration
+lambda_name = "scare-scale-batch-dispatcher"
+lambda_timeout = 300
+lambda_memory = 512
+lambda_ephemeral_storage = 512
+
+# EventBridge Schedule - runs daily at 2 AM UTC
+schedule_expression = "cron(0 2 * * ? *)"
+
+lambda_jar_path = "../build/libs/scare-scale-batch-job-all.jar"
+
+tmdb_api_key        = "your-tmdb-api-key-here"
+supabase_secret_key = "your-supabase-secret-key-here"
+supabase_project_id = "your-supabase-project-id-here"
+
+tags = {}

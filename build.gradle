@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.gradleup.shadow' version '9.3.1'
 }
 
 group = 'com.scarescale'
@@ -45,3 +46,13 @@ tasks.register('runBatch', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = application.mainClass
 }
+
+// Task for creating a fat JAR for AWS Lambda deployment
+shadowJar {
+    archiveFileName = "scare-scale-batch-job-all.jar"
+    archiveClassifier = ""
+    mergeServiceFiles()
+}
+
+// Make shadowJar part of the build
+build.dependsOn shadowJar
