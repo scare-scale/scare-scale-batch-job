@@ -110,16 +110,3 @@ resource "aws_cloudwatch_metric_alarm" "lambda_duration" {
     FunctionName = aws_lambda_function.batch_dispatcher.function_name
   }
 }
-
-# Lambda function URL (alternative to EventBridge for manual testing)
-resource "aws_lambda_function_url" "batch_dispatcher" {
-  function_name          = aws_lambda_function.batch_dispatcher.function_name
-  authorization_type    = "AWS_IAM"
-  cors {
-    allow_credentials = false
-    allow_origins     = ["*"]
-    allow_methods     = ["POST"]
-    max_age           = 0
-  }
-}
-

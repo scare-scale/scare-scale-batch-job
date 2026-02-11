@@ -8,12 +8,6 @@ output "lambda_function_arn" {
   value       = aws_lambda_function.batch_dispatcher.arn
 }
 
-output "lambda_function_url" {
-  description = "Lambda Function URL for manual invocation"
-  value       = aws_lambda_function_url.batch_dispatcher.function_url
-  sensitive   = true
-}
-
 output "eventbridge_rule_name" {
   description = "Name of the EventBridge rule"
   value       = aws_cloudwatch_event_rule.batch_schedule.name
