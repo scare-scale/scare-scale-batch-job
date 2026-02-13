@@ -1,21 +1,35 @@
 package com.scarescale.batch.movieupdate;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.List;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbDiscover;
 import info.movito.themoviedbapi.model.core.Movie;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import info.movito.themoviedbapi.tools.TmdbException;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 class MovieIteratorTest {
+    @Mock
+    private TmdbApi mockTmdbApi;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testMovieIteratorInitialization() {
+        assertNotNull(mockTmdbApi);
+    }
 
     @Test
     void returnsValidMoviesOnly() throws Exception {
@@ -182,3 +196,4 @@ class MovieIteratorTest {
         assertEquals(valid.getPosterPath(), result.getPosterPath());
     }
 }
+

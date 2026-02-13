@@ -17,23 +17,15 @@ java {
     }
 }
 
+// Define dependencies for the application at root level
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'
-
-    implementation 'com.amazonaws:aws-lambda-java-core:1.4.0'
-
-    implementation 'com.google.auto.service:auto-service:1.1.1'
-    annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
-
-    implementation "uk.co.conoregan:themoviedbapi:2.4.0"
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testImplementation 'org.mockito:mockito-core:5.11.0'
+    // Include all modules
+    implementation project(':dispatcher')
+    implementation project(':movie-update-job')
 }
 
 application {
-    mainClass = 'com.scarescale.batch.ScareScaleBatchApplication'
+    mainClass = 'com.scarescale.batch.BatchDispatcher'
 }
 
 test {
@@ -52,6 +44,10 @@ shadowJar {
     archiveFileName = "scare-scale-batch-job-all.jar"
     archiveClassifier = ""
     mergeServiceFiles()
+
+    // Include all submodule classes and resources
+    from project(':dispatcher').sourceSets.main.output
+    from project(':movie-update-job').sourceSets.main.output
 }
 
 // Make shadowJar part of the build

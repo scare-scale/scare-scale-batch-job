@@ -9,6 +9,12 @@ locals {
   lambda_architectures = ["x86_64"]
 }
 
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = local.lambda_jar_path
+  output_path = "${path.module}/lambda.zip"
+}
+
 # Create a CloudWatch log group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name_prefix       = "/aws/lambda/${var.lambda_name}"
@@ -24,7 +30,9 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 
 # Lambda function
 resource "aws_lambda_function" "batch_dispatcher" {
-  filename         = local.lambda_jar_path
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
   function_name    = var.lambda_name
   role             = aws_iam_role.lambda_role.arn
   handler          = local.lambda_handler
@@ -32,17 +40,17 @@ resource "aws_lambda_function" "batch_dispatcher" {
   architectures    = local.lambda_architectures
   timeout          = var.lambda_timeout
   memory_size      = var.lambda_memory
+
   ephemeral_storage {
     size = var.lambda_ephemeral_storage
   }
 
-  # Environment variables for the Lambda function
   environment {
     variables = {
-      LOG_LEVEL                = "INFO"
-      TMDB_API_KEY             = var.tmdb_api_key
-      SUPABASE_SECRET_KEY      = var.supabase_secret_key
-      SUPABASE_PROJECT_ID      = var.supabase_project_id
+      LOG_LEVEL           = "INFO"
+      TMDB_API_KEY        = var.tmdb_api_key
+      SUPABASE_SECRET_KEY = var.supabase_secret_key
+      SUPABASE_PROJECT_ID = var.supabase_project_id
     }
   }
 
@@ -53,9 +61,7 @@ resource "aws_lambda_function" "batch_dispatcher" {
 
   tags = merge(
     var.tags,
-    {
-      Name = var.lambda_name
-    }
+    { Name = var.lambda_name }
   )
 }
 

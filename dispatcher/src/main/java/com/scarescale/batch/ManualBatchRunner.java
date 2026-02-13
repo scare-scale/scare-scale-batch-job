@@ -22,3 +22,4 @@ public class ManualBatchRunner {
         System.out.println(result);
     }
 }
+

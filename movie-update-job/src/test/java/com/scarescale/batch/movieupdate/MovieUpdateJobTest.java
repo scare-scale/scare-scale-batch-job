@@ -1,15 +1,43 @@
 package com.scarescale.batch.movieupdate;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.stream.Stream;
-
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.tools.TmdbException;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.stream.Stream;
+
 class MovieUpdateJobTest {
+    @Mock
+    private TmdbApi mockTmdbApi;
+
+    @Mock
+    private PostgresController mockPostgresController;
+
+    @Mock
+    private MovieIterator mockMovieIterator;
+
+    private MovieUpdateJob movieUpdateJob;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        movieUpdateJob = new MovieUpdateJob(mockTmdbApi, mockPostgresController, mockMovieIterator);
+    }
+
+    @Test
+    void testMovieUpdateJobInitialization() {
+        assertNotNull(movieUpdateJob);
+    }
 
     @Test
     void insertsAllMovies() {
@@ -61,3 +89,4 @@ class MovieUpdateJobTest {
         assertThrows(RuntimeException.class, job::run);
     }
 }
+
