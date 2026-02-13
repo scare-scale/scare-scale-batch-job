@@ -9,6 +9,12 @@ locals {
   lambda_architectures = ["x86_64"]
 }
 
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = local.lambda_jar_path
+  output_path = "${path.module}/lambda.zip"
+}
+
 # Create a CloudWatch log group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name_prefix       = "/aws/lambda/${var.lambda_name}"
@@ -24,7 +30,9 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 
 # Lambda function
 resource "aws_lambda_function" "batch_dispatcher" {
-  filename         = local.lambda_jar_path
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
   function_name    = var.lambda_name
   role             = aws_iam_role.lambda_role.arn
   handler          = local.lambda_handler
